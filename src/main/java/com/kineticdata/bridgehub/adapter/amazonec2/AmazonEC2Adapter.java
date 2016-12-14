@@ -50,6 +50,20 @@ public class AmazonEC2Adapter implements BridgeAdapter {
     /** Defines the logger */
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(AmazonEC2Adapter.class);
     
+    /** Adapter version constant. */
+    public static String VERSION;
+    /** Load the properties version from the version.properties file. */
+    static {
+        try {
+            java.util.Properties properties = new java.util.Properties();
+            properties.load(AmazonEC2Adapter.class.getResourceAsStream("/"+AmazonEC2Adapter.class.getName()+".version"));
+            VERSION = properties.getProperty("version");
+        } catch (IOException e) {
+            logger.warn("Unable to load "+AmazonEC2Adapter.class.getName()+" version properties.", e);
+            VERSION = "Unknown";
+        }
+    }
+    
     /** Defines the collection of property names for the adapter */
     public static class Properties {
         public static final String ACCESS_KEY = "Access Key";
@@ -63,7 +77,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
     
     private final ConfigurablePropertyMap properties = new ConfigurablePropertyMap(
         new ConfigurableProperty(Properties.ACCESS_KEY).setIsRequired(true),
-        new ConfigurableProperty(Properties.SECRET_KEY).setIsRequired(true),
+        new ConfigurableProperty(Properties.SECRET_KEY).setIsRequired(true).setIsSensitive(true),
         new ConfigurableProperty(Properties.ENDPOINT).setIsRequired(true),
         new ConfigurableProperty(Properties.HOST).setIsRequired(true),
         new ConfigurableProperty(Properties.REGION).setIsRequired(true),
@@ -102,7 +116,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
     
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return VERSION;
     }
     
     @Override
@@ -121,11 +135,6 @@ public class AmazonEC2Adapter implements BridgeAdapter {
 
     @Override
     public Count count(BridgeRequest request) throws BridgeError {
-        // Log the access
-        logger.trace("Counting the Salesforce Records");
-        logger.trace("  Structure: " + request.getStructure());
-        logger.trace("  Query: " + request.getQuery());
-        
         String structure = request.getStructure();
         AmazonEC2QualificationParser parser = new AmazonEC2QualificationParser();
         String query = parser.parse(request.getQuery(),request.getParameters());
@@ -230,12 +239,6 @@ public class AmazonEC2Adapter implements BridgeAdapter {
 
     @Override
     public Record retrieve(BridgeRequest request) throws BridgeError {
-        // Log the access
-        logger.trace("Retrieving ServiceNow Record");
-        logger.trace("  Structure: " + request.getStructure());
-        logger.trace("  Query: " + request.getQuery());
-        logger.trace("  Fields: " + request.getFieldString());
-
         List<String> fields = request.getFields();
         String structure = request.getStructure();
         AmazonEC2QualificationParser parser = new AmazonEC2QualificationParser();
@@ -357,12 +360,6 @@ public class AmazonEC2Adapter implements BridgeAdapter {
 
     @Override
     public RecordList search(BridgeRequest request) throws BridgeError {
-        // Log the access
-        logger.trace("Searching ServiceNow Records");
-        logger.trace("  Structure: " + request.getStructure());
-        logger.trace("  Query: " + request.getQuery());
-        logger.trace("  Fields: " + request.getFieldString());
-        
         String structure = request.getStructure();
         List<String> fields = request.getFields();
         Map<String,String> metadata = BridgeUtils.normalizePaginationMetadata(request.getMetadata());
