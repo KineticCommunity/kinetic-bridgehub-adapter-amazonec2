@@ -1,5 +1,6 @@
 package com.kineticdata.bridgehub.adapter.amazonec2;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kineticdata.bridgehub.adapter.BridgeAdapter;
 import com.kineticdata.bridgehub.adapter.BridgeError;
 import com.kineticdata.bridgehub.adapter.BridgeRequest;
@@ -468,6 +469,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
                 while(keysItr.hasNext()) {
                     String key = keysItr.next();
                     Object value = recordObject.get(key);
+                    if (value instanceof org.json.JSONObject) value = value.toString();
                     map.put(key, value);
                 }
             }
