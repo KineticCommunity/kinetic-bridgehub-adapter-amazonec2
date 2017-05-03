@@ -1,6 +1,5 @@
 package com.kineticdata.bridgehub.adapter.amazonec2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kineticdata.bridgehub.adapter.BridgeAdapter;
 import com.kineticdata.bridgehub.adapter.BridgeError;
 import com.kineticdata.bridgehub.adapter.BridgeRequest;
@@ -17,6 +16,7 @@ import java.util.TimeZone;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,7 +46,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
      *--------------------------------------------------------------------------------------------*/
     
     /** Defines the adapter display name */
-    public static final String NAME = "AmazonEC2 Bridge";
+    public static final String NAME = "Amazon EC2 Bridge (Legacy)";
     
     /** Defines the logger */
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(AmazonEC2Adapter.class);
@@ -192,8 +192,15 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         }
         
         JSONObject jsonOutput = XML.toJSONObject(output);
-        JSONArray outputArray = (JSONArray) jsonOutput.getJSONObject("DescribeInstancesResponse").getJSONObject("reservationSet").getJSONArray("item");
-        
+        JSONObject reservationSet = jsonOutput.getJSONObject("DescribeInstancesResponse").getJSONObject("reservationSet");
+        JSONArray outputArray = reservationSet.optJSONArray("item");
+        // Check for the case where item isn't a JSON Array and has either 0 or 1 objects
+        if (outputArray == null) {
+            outputArray = new JSONArray();
+            JSONObject item = reservationSet.optJSONObject("item");
+            if (item != null) outputArray.put(item);
+        }
+                
         Pattern pattern = Pattern.compile("([\"\"])(?:(?=(\\\\?))\\2.)*?\\1");
         Matcher matcher = pattern.matcher(query);
         
@@ -297,7 +304,14 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         }
         
         JSONObject jsonOutput = XML.toJSONObject(output);
-        JSONArray outputArray = (JSONArray)jsonOutput.getJSONObject("DescribeInstancesResponse").getJSONObject("reservationSet").getJSONArray("item");
+        JSONObject reservationSet = jsonOutput.getJSONObject("DescribeInstancesResponse").getJSONObject("reservationSet");
+        JSONArray outputArray = reservationSet.optJSONArray("item");
+        // Check for the case where item isn't a JSON Array and has either 0 or 1 objects
+        if (outputArray == null) {
+            outputArray = new JSONArray();
+            JSONObject item = reservationSet.optJSONObject("item");
+            if (item != null) outputArray.put(item);
+        }
         
         Pattern pattern = Pattern.compile("([\"\"])(?:(?=(\\\\?))\\2.)*?\\1");
         Matcher matcher = pattern.matcher(query);
@@ -355,6 +369,9 @@ public class AmazonEC2Adapter implements BridgeAdapter {
                 record = new Record(recordMap);
             }
         }
+        
+        // Retrieve fields that are contained in a json string
+        record = BridgeUtils.getNestedFields(request.getFields(),Arrays.asList(record)).get(0);
         
         return record;
     }
@@ -419,7 +436,14 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         }
         
         JSONObject jsonOutput = XML.toJSONObject(output);
-        JSONArray outputArray = (JSONArray)jsonOutput.getJSONObject("DescribeInstancesResponse").getJSONObject("reservationSet").getJSONArray("item");
+        JSONObject reservationSet = jsonOutput.getJSONObject("DescribeInstancesResponse").getJSONObject("reservationSet");
+        JSONArray outputArray = reservationSet.optJSONArray("item");
+        // Check for the case where item isn't a JSON Array and has either 0 or 1 objects
+        if (outputArray == null) {
+            outputArray = new JSONArray();
+            JSONObject item = reservationSet.optJSONObject("item");
+            if (item != null) outputArray.put(item);
+        }
         
         Pattern pattern = Pattern.compile("([\"\"])(?:(?=(\\\\?))\\2.)*?\\1");
         Matcher matcher = pattern.matcher(query);
@@ -475,6 +499,9 @@ public class AmazonEC2Adapter implements BridgeAdapter {
             }
             records.add(new Record(map));
         }
+        
+        // Retrieve fields from a json string
+        records = BridgeUtils.getNestedFields(request.getFields(), records);
 
         // Returning the response
         return new RecordList(fields, records, metadata);
