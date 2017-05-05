@@ -46,7 +46,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
      *--------------------------------------------------------------------------------------------*/
     
     /** Defines the adapter display name */
-    public static final String NAME = "Amazon EC2 Bridge (Legacy)";
+    public static final String NAME = "Amazon EC2 Bridge";
     
     /** Defines the logger */
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(AmazonEC2Adapter.class);
