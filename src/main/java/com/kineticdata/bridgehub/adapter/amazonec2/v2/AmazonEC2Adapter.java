@@ -1,4 +1,4 @@
-package com.kineticdata.bridgehub.adapter.amazonec2;
+package com.kineticdata.bridgehub.adapter.amazonec2.v2;
 
 import com.kineticdata.bridgehub.adapter.BridgeAdapter;
 import com.kineticdata.bridgehub.adapter.BridgeError;
