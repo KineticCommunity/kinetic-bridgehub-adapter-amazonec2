@@ -48,7 +48,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
      *--------------------------------------------------------------------------------------------*/
     
     /** Defines the adapter display name */
-    public static final String NAME = "AmazonEC2 Bridge";
+    public static final String NAME = "Amazon EC2 Bridge";
     
     /** Defines the logger */
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(AmazonEC2Adapter.class);
@@ -78,14 +78,12 @@ public class AmazonEC2Adapter implements BridgeAdapter {
     private final ConfigurablePropertyMap properties = new ConfigurablePropertyMap(
         new ConfigurableProperty(Properties.ACCESS_KEY).setIsRequired(true),
         new ConfigurableProperty(Properties.SECRET_KEY).setIsRequired(true).setIsSensitive(true),
-        new ConfigurableProperty(Properties.REGION).setIsRequired(true),
-        new ConfigurableProperty(Properties.API_VERSION).setIsRequired(true)
+        new ConfigurableProperty(Properties.REGION).setIsRequired(true)
     );
     
     private String accessKey;
     private String secretKey;
     private String region;
-    private String apiVersion;
     
     /*---------------------------------------------------------------------------------------------
      * SETUP METHODS
@@ -96,7 +94,6 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         this.accessKey = properties.getValue(Properties.ACCESS_KEY);
         this.secretKey = properties.getValue(Properties.SECRET_KEY);
         this.region = properties.getValue(Properties.REGION);
-        this.apiVersion = properties.getValue(Properties.API_VERSION);
     }
     
     @Override
@@ -130,8 +127,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         
         // Build the url to retrieve the ec2 data
         StringBuilder url = new StringBuilder("https://ec2.amazonaws.com");
-        url.append("?Version=").append(this.apiVersion);
-        url.append("&Action=Describe").append(request.getStructure());
+        url.append("?Version=2016-11-15&Action=Describe").append(request.getStructure());
         if (!query.isEmpty()) url.append("&").append(query);
         
         // The headers that we want to add to the request
@@ -172,8 +168,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         
         // Build the url to retrieve the ec2 data
         StringBuilder url = new StringBuilder("https://ec2.amazonaws.com");
-        url.append("?Version=").append(this.apiVersion);
-        url.append("&Action=Describe").append(request.getStructure());
+        url.append("?Version=2016-11-15&Action=Describe").append(request.getStructure());
         if (!query.isEmpty()) url.append("&").append(query);
         
         // The headers that we want to add to the request
@@ -220,8 +215,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         
         // Build the url to retrieve the ec2 data
         StringBuilder url = new StringBuilder("https://ec2.amazonaws.com");
-        url.append("?Version=").append(this.apiVersion);
-        url.append("&Action=Describe").append(request.getStructure());
+        url.append("?Version=2016-11-15&Action=Describe").append(request.getStructure());
         if (!query.isEmpty()) url.append("&").append(query);
         
         // The headers that we want to add to the request
