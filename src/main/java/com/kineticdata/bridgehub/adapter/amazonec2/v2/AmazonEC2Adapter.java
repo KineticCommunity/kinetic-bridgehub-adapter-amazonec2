@@ -551,7 +551,11 @@ public class AmazonEC2Adapter implements BridgeAdapter {
                 for (String key : jsonKeys) {
                     Object value = jsonObject.get(key);
                     if (value instanceof JSONObject && ((JSONObject)value).keySet().contains("item")) {
-                        record.put(key, convertJsonToRecordObjects((JSONObject)value));
+                        record.put(key, new ArrayList<JSONObject>());
+                        for (Map<String,Object> m : convertJsonToRecordObjects((JSONObject)value)) {
+                            ((ArrayList)record.get(key)).add(new JSONObject(m));
+                        }
+//                        record.put(key, convertJsonToRecordObjects((JSONObject)value));
                     } else if (value instanceof JSONObject) {
                         // If the value is a JSON object and isn't an item, convert it from JSONObject type org.json to
                         // org.json.simple so that it is serializable
