@@ -128,7 +128,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         // Build the url to retrieve the ec2 data
         StringBuilder url = new StringBuilder("https://ec2.amazonaws.com");
         url.append("?Version=2016-11-15&Action=Describe").append(request.getStructure());
-        if (!query.isEmpty()) url.append("&").append(query);
+        if (!query.isEmpty()) url.append("&").append(parser.convertToAwsSyntax(query));
         
         // The headers that we want to add to the request
         List<String> headers = new ArrayList<String>();
@@ -169,7 +169,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         // Build the url to retrieve the ec2 data
         StringBuilder url = new StringBuilder("https://ec2.amazonaws.com");
         url.append("?Version=2016-11-15&Action=Describe").append(request.getStructure());
-        if (!query.isEmpty()) url.append("&").append(query);
+        if (!query.isEmpty()) url.append("&").append(parser.convertToAwsSyntax(query));
         
         // The headers that we want to add to the request
         List<String> headers = new ArrayList<String>();
@@ -216,7 +216,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         // Build the url to retrieve the ec2 data
         StringBuilder url = new StringBuilder("https://ec2.amazonaws.com");
         url.append("?Version=2016-11-15&Action=Describe").append(request.getStructure());
-        if (!query.isEmpty()) url.append("&").append(query);
+        if (!query.isEmpty()) url.append("&").append(parser.convertToAwsSyntax(query));
         
         // The headers that we want to add to the request
         List<String> headers = new ArrayList<String>();
