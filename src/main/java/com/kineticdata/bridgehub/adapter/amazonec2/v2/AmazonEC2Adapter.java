@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.XML;
 import org.json.JSONArray;
@@ -386,7 +386,7 @@ public class AmazonEC2Adapter implements BridgeAdapter {
         String authorization = String.format("AWS4-HMAC-SHA256 Credential=%s/%s, SignedHeaders=%s, Signature=%s",accessKey,credentialScope,signedHeaders,signature);
         
         /* CREATE THE HTTP REQUEST */
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClients.createDefault();
         HttpGet get = new HttpGet(url);
         get.setHeader("Authorization",authorization);
         for (Map.Entry<String,String> header : headerMap.entrySet()) {
